@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'dart:typed_data';
+import 'dart:math' as math;
 
 class SkillBadge extends StatefulWidget {
   final String skill;
@@ -15,12 +16,41 @@ class _SkillBadgeState extends State<SkillBadge> {
   bool _isHovered = false;
   final AudioPlayer _audioPlayer = AudioPlayer();
 
-  // Very short PCM wav file data for a subtle 'tick'
-  static final Uint8List _clickBytes = Uint8List.fromList([
-    82, 73, 70, 70, 44, 0, 0, 0, 87, 65, 86, 69, 102, 109, 116, 32, 
-    16, 0, 0, 0, 1, 0, 1, 0, 68, 172, 0, 0, 68, 172, 0, 0, 
-    1, 0, 8, 0, 100, 97, 116, 97, 8, 0, 0, 0, 255, 128, 64, 32, 16, 8, 4, 2
-  ]);
+  // Generate a reliable, audible tick sound using a short sine wave
+  static final Uint8List _clickBytes = _generateClickSound();
+
+  static Uint8List _generateClickSound() {
+    const sampleRate = 44100;
+    const duration = 0.05; // 50ms
+    final numSamples = (sampleRate * duration).toInt();
+    
+    final byteData = ByteData(44 + numSamples * 2);
+    
+    byteData.setUint32(0, 0x52494646, Endian.big); // "RIFF"
+    byteData.setUint32(4, 36 + numSamples * 2, Endian.little);
+    byteData.setUint32(8, 0x57415645, Endian.big); // "WAVE"
+    
+    byteData.setUint32(12, 0x666D7420, Endian.big); // "fmt "
+    byteData.setUint32(16, 16, Endian.little); 
+    byteData.setUint16(20, 1, Endian.little); // PCM
+    byteData.setUint16(22, 1, Endian.little); // Mono
+    byteData.setUint32(24, sampleRate, Endian.little); 
+    byteData.setUint32(28, sampleRate * 2, Endian.little); 
+    byteData.setUint16(32, 2, Endian.little); 
+    byteData.setUint16(34, 16, Endian.little); 
+    
+    byteData.setUint32(36, 0x64617461, Endian.big); // "data"
+    byteData.setUint32(40, numSamples * 2, Endian.little);
+    
+    for (int i = 0; i < numSamples; i++) {
+      final t = i / sampleRate;
+      final env = math.exp(-t * 150); // fast decay
+      final val = math.sin(2 * math.pi * 1500 * t) * env * 32767 * 0.5;
+      byteData.setInt16(44 + i * 2, val.toInt(), Endian.little);
+    }
+    
+    return byteData.buffer.asUint8List();
+  }
 
   @override
   void dispose() {
