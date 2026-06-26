@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'dart:typed_data';
+import 'dart:convert';
 import 'dart:math' as math;
 
 class SkillBadge extends StatefulWidget {
@@ -17,11 +18,11 @@ class _SkillBadgeState extends State<SkillBadge> {
   final AudioPlayer _audioPlayer = AudioPlayer();
 
   // Generate a reliable, audible tick sound using a short sine wave
-  static final Uint8List _clickBytes = _generateClickSound();
+  static final String _clickDataUri = 'data:audio/wav;base64,' + base64Encode(_generateClickSound());
 
   static Uint8List _generateClickSound() {
     const sampleRate = 44100;
-    const duration = 0.05; // 50ms
+    const duration = 0.1; // 100ms (longer)
     final numSamples = (sampleRate * duration).toInt();
     
     final byteData = ByteData(44 + numSamples * 2);
@@ -44,8 +45,8 @@ class _SkillBadgeState extends State<SkillBadge> {
     
     for (int i = 0; i < numSamples; i++) {
       final t = i / sampleRate;
-      final env = math.exp(-t * 150); // fast decay
-      final val = math.sin(2 * math.pi * 1500 * t) * env * 32767 * 0.5;
+      final env = math.exp(-t * 50); // slower decay for louder sound
+      final val = math.sin(2 * math.pi * 1000 * t) * env * 32767; // MAX amplitude
       byteData.setInt16(44 + i * 2, val.toInt(), Endian.little);
     }
     
@@ -62,11 +63,8 @@ class _SkillBadgeState extends State<SkillBadge> {
     setState(() {
       _isHovered = true;
     });
-    // Play tick sound using local bytes to bypass browser CORS
-    _audioPlayer.play(
-      BytesSource(_clickBytes),
-      volume: 0.5,
-    ).catchError((e) {
+    // Play tick sound using local base64 data URI to bypass browser CORS and bugs
+    _audioPlayer.play(UrlSource(_clickDataUri), volume: 1.0).catchError((e) {
       debugPrint('Audio play error: $e');
     });
   }
