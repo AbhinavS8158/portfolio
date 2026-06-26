@@ -39,7 +39,7 @@ class _ProjectCardState extends State<ProjectCard> {
           ..rotateY(-x * pi * 0.15),
         child: Container(
           width: 350,
-          height: 320,
+          constraints: const BoxConstraints(minHeight: 320),
           margin: const EdgeInsets.all(16),
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
@@ -71,43 +71,37 @@ class _ProjectCardState extends State<ProjectCard> {
                 maxLines: 4,
                 overflow: TextOverflow.ellipsis,
               ),
-              const Spacer(),
+              const SizedBox(height: 24),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: widget.project.techStack.map((tech) => Chip(
+                  label: Text(tech, style: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: 10, color: Theme.of(context).primaryColor)),
+                  backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+                  side: BorderSide.none,
+                )).toList(),
+              ),
+              const SizedBox(height: 16),
               Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: widget.project.techStack.map((tech) => Chip(
-                        label: Text(tech, style: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: 10, color: Theme.of(context).primaryColor)),
-                        backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
-                        side: BorderSide.none,
-                      )).toList(),
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: widget.project.links.entries.map((entry) {
+                  return IconButton(
+                    icon: Icon(
+                      entry.key.toLowerCase().contains('github') ? Icons.code : Icons.open_in_new,
+                      color: Colors.white70,
+                      size: 20,
                     ),
-                  ),
-                  Row(
-                    children: widget.project.links.entries.map((entry) {
-                      return IconButton(
-                        icon: Icon(
-                          entry.key.toLowerCase().contains('github') ? Icons.code : Icons.open_in_new,
-                          color: Colors.white70,
-                          size: 20,
-                        ),
-                        onPressed: () async {
-                          final uri = Uri.parse(entry.value);
-                          try {
-                            await launchUrl(uri, mode: LaunchMode.externalApplication);
-                          } catch (e) {
-                            debugPrint("Could not launch url: $e");
-                          }
-                        },
-                        tooltip: entry.key,
-                      );
-                    }).toList(),
-                  ),
-                ],
+                    onPressed: () async {
+                      final uri = Uri.parse(entry.value);
+                      try {
+                        await launchUrl(uri, mode: LaunchMode.externalApplication);
+                      } catch (e) {
+                        debugPrint("Could not launch url: $e");
+                      }
+                    },
+                    tooltip: entry.key,
+                  );
+                }).toList(),
               )
             ],
           ),

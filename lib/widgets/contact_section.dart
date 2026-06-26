@@ -84,17 +84,18 @@ class _ContactSectionState extends State<ContactSection> {
                 ),
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: isDesktop ? CrossAxisAlignment.start : CrossAxisAlignment.center,
                 children: [
-                  _infoItem(Icons.location_on_outlined, "Location", "Sreebhavan,Tirur,Kerala"),
+                  _infoItem(Icons.location_on_outlined, "Location", "Sreebhavan,Tirur,Kerala", isDesktop),
                   const SizedBox(height: 32),
-                  _infoItem(Icons.email_outlined, "Email", "abhinav.8158s@gmail.com"),
+                  _infoItem(Icons.email_outlined, "Email", "abhinav.8158s@gmail.com", isDesktop),
                   const SizedBox(height: 32),
-                  _infoItem(Icons.phone_android_outlined, "Call", "+91 9567112236"),
+                  _infoItem(Icons.phone_android_outlined, "Call", "+91 9567112236", isDesktop),
                   const SizedBox(height: 48),
                   const Divider(color: Color(0xFF1e1e2e)),
                   const SizedBox(height: 24),
                   Row(
+                    mainAxisAlignment: isDesktop ? MainAxisAlignment.start : MainAxisAlignment.center,
                     children: [
                       _socialIcon(Icons.link, "LinkedIn", "https://www.linkedin.com/in/abhinav-s-b8b0b8265"),
                       const SizedBox(width: 16),
@@ -158,8 +159,9 @@ class _ContactSectionState extends State<ContactSection> {
     );
   }
 
-  Widget _infoItem(IconData icon, String title, String subtitle) {
+  Widget _infoItem(IconData icon, String title, String subtitle, bool isDesktop) {
     return Row(
+      mainAxisAlignment: isDesktop ? MainAxisAlignment.start : MainAxisAlignment.center,
       children: [
         Container(
           padding: const EdgeInsets.all(12),
@@ -171,7 +173,7 @@ class _ContactSectionState extends State<ContactSection> {
         ),
         const SizedBox(width: 16),
         Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: isDesktop ? CrossAxisAlignment.start : CrossAxisAlignment.center,
           children: [
             Text(title, style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 20, letterSpacing: 0)),
             const SizedBox(height: 4),
