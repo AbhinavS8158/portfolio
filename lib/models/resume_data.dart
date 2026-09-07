@@ -34,6 +34,12 @@ class ResumeData {
 
   static final List<Project> projects = [
     Project(
+      title: "MessagingFox",
+      description: "Multi-Channel Customer Messaging Platform. Built a Flutter Web application unifying Instagram, WhatsApp, Facebook, and Email customer conversations into a single, real-time inbox. Implemented Meta OAuth-based account connection flow for Instagram and Facebook Page integration, including Page Public Metadata Access and pages_read_engagement permission handling. Architected a responsive, reusable component architecture including a dynamic capability card grid and a dedicated dashboard search module with overlay lifecycle management.",
+      techStack: ["Flutter Web", "Dart", "Meta OAuth", "Responsive UI"],
+      links: {},
+    ),
+    Project(
       title: "Bee Player",
       description: "Robust music and video player using Flutter for Android platforms with Hive for local storage to allow offline access. Designed with a focus on personal data confidentiality.",
       techStack: ["Dart", "Flutter", "Hive"],
