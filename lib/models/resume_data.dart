@@ -49,7 +49,7 @@ class ResumeData {
       title: "PlainScan",
       description: "Developed through Vaavix Technologies. Transform your smartphone into an all-in-one document workstation. PlainScan combines high-definition camera scanning, intelligent OCR, powerful Al document analysis, and 50+ PDF tools so you can scan, convert, edit, and share documents effortlessly.",
       techStack: ["Flutter", "Dart", "AI", "OCR"],
-      links: {},
+      links: {"Play Store": "https://play.google.com/store/apps/details?id=com.plainscan.app&hl=en_IN"},
     ),
     Project(
       title: "Student Management App",
