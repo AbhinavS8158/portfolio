@@ -46,6 +46,12 @@ class ResumeData {
       links: {"Live Link (User)": "https://abhinav8158.itch.io/axiom-user","Live Link (Provider)": "https://abhinav8158.itch.io/axiom-service", "Live Link (admin)": "https://axiom-serviceprovider.web.app","GitHub": "https://github.com/abhinav/axiom"},
     ),
     Project(
+      title: "PlainScan",
+      description: "Developed through Vaavix Technologies. Transform your smartphone into an all-in-one document workstation. PlainScan combines high-definition camera scanning, intelligent OCR, powerful Al document analysis, and 50+ PDF tools so you can scan, convert, edit, and share documents effortlessly.",
+      techStack: ["Flutter", "Dart", "AI", "OCR"],
+      links: {},
+    ),
+    Project(
       title: "Student Management App",
       description: "Streamlines administration of student data. Developed using GetX/Provider and Hive database for robust handling of information.",
       techStack: ["Flutter", "GetX", "Provider", "Hive"],
