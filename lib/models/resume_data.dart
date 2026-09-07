@@ -15,6 +15,14 @@ class Education {
   Education({required this.degree, required this.institution, required this.duration});
 }
 
+class Experience {
+  final String role;
+  final String company;
+  final String duration;
+
+  Experience({required this.role, required this.company, required this.duration});
+}
+
 class ResumeData {
   static const String name = "ABHINAV S";
   static const String title = "Flutter Developer";
@@ -55,6 +63,29 @@ class ResumeData {
       degree: "Bachelor of Physics",
       institution: "Thunchan Memorial Govt College Tirur ,India",
       duration: "2016 - 2019",
+    )
+  ];
+
+  static final List<Experience> experience = [
+    Experience(
+      role: "Flutter Developer",
+      company: "Vaavix Technologies",
+      duration: "2026 - Present",
+    ),
+    Experience(
+      role: "Flutter Developer",
+      company: "Freelance",
+      duration: "2026",
+    ),
+    Experience(
+      role: "Flutter Developer",
+      company: "Webeaz Technologies",
+      duration: "2023 - 2024",
+    ),
+    Experience(
+      role: "Flutter Developer Intern",
+      company: "Softroniics",
+      duration: "2023",
     )
   ];
 }

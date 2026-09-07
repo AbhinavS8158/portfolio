@@ -5,6 +5,7 @@ import '../widgets/project_card.dart';
 import '../widgets/phone_mockup.dart';
 import '../widgets/grid_painter.dart';
 import '../widgets/skill_badge.dart';
+import '../widgets/experience_timeline.dart';
 import '../widgets/education_timeline.dart';
 import '../widgets/contact_section.dart';
 
@@ -18,6 +19,7 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   final GlobalKey _homeKey = GlobalKey();
   final GlobalKey _projectsKey = GlobalKey();
+  final GlobalKey _experienceKey = GlobalKey();
   final GlobalKey _educationKey = GlobalKey();
   final GlobalKey _contactKey = GlobalKey();
 
@@ -112,6 +114,17 @@ class _HomeViewState extends State<HomeView> {
                       ),
                       const SizedBox(height: 150),
                       Container(
+                        key: _experienceKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildSectionTitle(context, "EXPERIENCE"),
+                            const ExperienceTimeline(),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 150),
+                      Container(
                         key: _educationKey,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -173,6 +186,8 @@ class _HomeViewState extends State<HomeView> {
                       const SizedBox(width: 32),
                       _navLink("PROJECTS", context, () => _scrollTo(_projectsKey)),
                       const SizedBox(width: 32),
+                      _navLink("EXPERIENCE", context, () => _scrollTo(_experienceKey)),
+                      const SizedBox(width: 32),
                       _navLink("EDUCATION", context, () => _scrollTo(_educationKey)),
                       const SizedBox(width: 32),
                       _navLink("CONTACT", context, () => _scrollTo(_contactKey)),
@@ -208,6 +223,11 @@ class _HomeViewState extends State<HomeView> {
           _drawerLink("PROJECTS", context, () {
             Navigator.pop(context);
             _scrollTo(_projectsKey);
+          }),
+          const SizedBox(height: 24),
+          _drawerLink("EXPERIENCE", context, () {
+            Navigator.pop(context);
+            _scrollTo(_experienceKey);
           }),
           const SizedBox(height: 24),
           _drawerLink("EDUCATION", context, () {
