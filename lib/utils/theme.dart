@@ -4,9 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 class AppTheme {
   static final ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
-    scaffoldBackgroundColor: const Color(0xFF0a0a0f),
-    primaryColor: const Color(0xFF00e5ff),
-    cardColor: const Color(0xFF13131c),
+    scaffoldBackgroundColor: const Color(0xFF060814),
+    primaryColor: const Color(0xFF00E5FF),
+    cardColor: const Color(0x1AFFFFFF),
     textTheme: TextTheme(
       displayLarge: GoogleFonts.syne(
         fontSize: 72,
@@ -22,12 +22,12 @@ class AppTheme {
       ),
       bodyLarge: GoogleFonts.dmMono(
         fontSize: 18,
-        color: const Color(0xFFe8e8f0),
+        color: const Color(0xFFE2E8F0),
         height: 1.6,
       ),
       bodyMedium: GoogleFonts.dmMono(
         fontSize: 14,
-        color: const Color(0xFF6b6b80),
+        color: const Color(0xFF94A3B8),
         height: 1.6,
       ),
       labelLarge: GoogleFonts.dmMono(
@@ -37,9 +37,9 @@ class AppTheme {
       ),
     ),
     colorScheme: const ColorScheme.dark(
-      primary: Color(0xFF00e5ff),
-      secondary: Color(0xFF7c3aed),
-      surface: Color(0xFF111118),
+      primary: Color(0xFF00E5FF),
+      secondary: Color(0xFF8B5CF6),
+      surface: Color(0x1AFFFFFF),
     ),
   );
 }

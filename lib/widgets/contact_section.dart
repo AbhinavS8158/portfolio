@@ -1,14 +1,14 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
+import 'glass_container.dart';
 
 class ContactSection extends StatefulWidget {
-  const ContactSection({Key? key}) : super(key: key);
+  const ContactSection({super.key});
 
   @override
-  _ContactSectionState createState() => _ContactSectionState();
+  State<ContactSection> createState() => _ContactSectionState();
 }
 
 class _ContactSectionState extends State<ContactSection> {
@@ -37,21 +37,32 @@ class _ContactSectionState extends State<ContactSection> {
         }),
       );
 
+      if (!mounted) return;
+
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Message sent successfully!')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Message sent successfully!')),
+        );
         _nameCtrl.clear();
         _emailCtrl.clear();
         _subjectCtrl.clear();
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Formspree endpoint not configured. Check source code.'),
-          backgroundColor: Colors.orange,
-        ));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Formspree endpoint not configured. Check source code.'),
+            backgroundColor: Colors.orange,
+          ),
+        );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
     } finally {
-      setState(() => _isSubmitting = false);
+      if (mounted) {
+        setState(() => _isSubmitting = false);
+      }
     }
   }
 
@@ -59,12 +70,11 @@ class _ContactSectionState extends State<ContactSection> {
   Widget build(BuildContext context) {
     final isDesktop = MediaQuery.of(context).size.width > 1000;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF1e1e2e)),
-      ),
+    return LiquidGlassContainer(
+      borderRadius: 28,
+      blur: 24,
+      padding: EdgeInsets.zero,
+      enableHoverEffect: false,
       child: Flex(
         direction: isDesktop ? Axis.horizontal : Axis.vertical,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,10 +86,10 @@ class _ContactSectionState extends State<ContactSection> {
               decoration: BoxDecoration(
                 border: Border(
                   right: BorderSide(
-                    color: isDesktop ? const Color(0xFF1e1e2e) : Colors.transparent,
+                    color: isDesktop ? Colors.white.withValues(alpha: 0.12) : Colors.transparent,
                   ),
                   bottom: BorderSide(
-                    color: !isDesktop ? const Color(0xFF1e1e2e) : Colors.transparent,
+                    color: !isDesktop ? Colors.white.withValues(alpha: 0.12) : Colors.transparent,
                   ),
                 ),
               ),
@@ -92,7 +102,7 @@ class _ContactSectionState extends State<ContactSection> {
                   const SizedBox(height: 32),
                   _infoItem(Icons.phone_android_outlined, "Call", "+91 9567112236", isDesktop),
                   const SizedBox(height: 48),
-                  const Divider(color: Color(0xFF1e1e2e)),
+                  Divider(color: Colors.white.withValues(alpha: 0.12)),
                   const SizedBox(height: 24),
                   Row(
                     mainAxisAlignment: isDesktop ? MainAxisAlignment.start : MainAxisAlignment.center,
@@ -119,34 +129,75 @@ class _ContactSectionState extends State<ContactSection> {
                     const SizedBox(height: 24),
                     _buildTextField("Email", "Your email..", _emailCtrl, isEmail: true),
                     const SizedBox(height: 24),
-                    Text("Country", style: Theme.of(context).textTheme.labelLarge),
+                    Text("Country", style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white)),
                     const SizedBox(height: 8),
                     DropdownButtonFormField<String>(
-                      value: _selectedCountry,
-                      dropdownColor: Theme.of(context).cardColor,
+                      initialValue: _selectedCountry,
+                      dropdownColor: const Color(0xFF0F172A),
+                      style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         filled: true,
-                        fillColor: Colors.white.withOpacity(0.02),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                        fillColor: Colors.white.withValues(alpha: 0.04),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Color(0xFF00E5FF)),
+                        ),
                       ),
-                      items: ['India', 'USA', 'UK', 'Other'].map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
-                      onChanged: (val) => setState(() => _selectedCountry = val!),
+                      items: ['India', 'USA', 'UK', 'Other']
+                          .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                          .toList(),
+                      onChanged: (val) {
+                        if (val != null) {
+                          setState(() => _selectedCountry = val);
+                        }
+                      },
                     ),
                     const SizedBox(height: 24),
                     _buildTextField("Subject", "Write something..", _subjectCtrl, maxLines: 4),
                     const SizedBox(height: 32),
                     Align(
                       alignment: Alignment.centerRight,
-                      child: ElevatedButton(
-                        onPressed: _isSubmitting ? null : _submitForm,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF4caf50),
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF00E5FF).withValues(alpha: 0.4),
+                              blurRadius: 20,
+                              spreadRadius: 1,
+                            )
+                          ],
                         ),
-                        child: _isSubmitting 
-                            ? const CircularProgressIndicator(color: Colors.white) 
-                            : Text("Submit", style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white)),
+                        child: ElevatedButton(
+                          onPressed: _isSubmitting ? null : _submitForm,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF00E5FF),
+                            foregroundColor: Colors.black,
+                            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                          ),
+                          child: _isSubmitting
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(color: Colors.black, strokeWidth: 2),
+                                )
+                              : Text(
+                                  "Submit",
+                                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                ),
+                        ),
                       ),
                     ),
                   ],
@@ -166,18 +217,19 @@ class _ContactSectionState extends State<ContactSection> {
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor.withOpacity(0.1),
+            color: const Color(0xFF00E5FF).withValues(alpha: 0.15),
             shape: BoxShape.circle,
+            border: Border.all(color: const Color(0xFF00E5FF).withValues(alpha: 0.3)),
           ),
-          child: Icon(icon, color: Theme.of(context).primaryColor),
+          child: Icon(icon, color: const Color(0xFF00E5FF)),
         ),
         const SizedBox(width: 16),
         Column(
           crossAxisAlignment: isDesktop ? CrossAxisAlignment.start : CrossAxisAlignment.center,
           children: [
-            Text(title, style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 20, letterSpacing: 0)),
+            Text(title, style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 20, letterSpacing: 0, color: Colors.white)),
             const SizedBox(height: 4),
-            Text(subtitle, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).primaryColor)),
+            Text(subtitle, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: const Color(0xFF00E5FF))),
           ],
         )
       ],
@@ -196,18 +248,24 @@ class _ContactSectionState extends State<ContactSection> {
       },
       borderRadius: BorderRadius.circular(50),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
         decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor.withOpacity(0.1),
+          color: Colors.white.withValues(alpha: 0.06),
           borderRadius: BorderRadius.circular(50),
-          border: Border.all(color: Theme.of(context).primaryColor.withOpacity(0.3)),
+          border: Border.all(color: const Color(0xFF00E5FF).withValues(alpha: 0.4)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: Theme.of(context).primaryColor, size: 20),
+            Icon(icon, color: const Color(0xFF00E5FF), size: 20),
             const SizedBox(width: 8),
-            Text(label, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold)),
+            Text(
+              label,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: const Color(0xFF00E5FF),
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
           ],
         ),
       ),
@@ -218,7 +276,7 @@ class _ContactSectionState extends State<ContactSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: Theme.of(context).textTheme.labelLarge),
+        Text(label, style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white)),
         const SizedBox(height: 8),
         TextFormField(
           controller: controller,
@@ -226,12 +284,18 @@ class _ContactSectionState extends State<ContactSection> {
           style: const TextStyle(color: Colors.white),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
+            hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.35)),
             filled: true,
-            fillColor: Colors.white.withOpacity(0.02),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-            enabledBorder: OutlineInputBorder(borderSide: const BorderSide(color: Color(0xFF1e1e2e)), borderRadius: BorderRadius.circular(8)),
-            focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).primaryColor), borderRadius: BorderRadius.circular(8)),
+            fillColor: Colors.white.withValues(alpha: 0.04),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: Color(0xFF00E5FF)),
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
           validator: (val) {
             if (val == null || val.isEmpty) return 'Please enter some text';
