@@ -37,7 +37,7 @@ class ResumeData {
       title: "MessagingFox",
       description: "Multi-Channel Customer Messaging Platform. Built a Flutter Web application unifying Instagram, WhatsApp, Facebook, and Email customer conversations into a single, real-time inbox. Implemented Meta OAuth-based account connection flow for Instagram and Facebook Page integration, including Page Public Metadata Access and pages_read_engagement permission handling. Architected a responsive, reusable component architecture including a dynamic capability card grid and a dedicated dashboard search module with overlay lifecycle management.",
       techStack: ["Flutter Web", "Dart", "Meta OAuth", "Responsive UI"],
-      links: {},
+      links: {"Play Store": "https://play.google.com/store/apps/details?id=com.messagingfox.app&hl=en_IN"},
     ),
     Project(
       title: "Bee Player",
